@@ -21,10 +21,6 @@ mongoose
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  res.send('Quiz API is running');
-});
-
 // API route to get all questions from MongoDB
 app.get('/questions', async (req, res) => {
   try {
