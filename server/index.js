@@ -23,13 +23,17 @@ app.use(bodyParser.json());
 
 // API route to get all questions from MongoDB
 app.get('/questions', async (req, res) => {
-  try {
-    const questions = await Question.find();
-    res.json(questions);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const raw = await Question.find();
+
+  const safe = raw.map(q => ({
+    _id: q._id,
+    question: q.question,
+    options: q.options
+  }));
+
+  res.json(safe);
 });
+
 
 // API route to submit answers and receive the score
 app.post('/submit', async (req, res) => {
