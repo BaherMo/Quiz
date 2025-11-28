@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Quiz from './components/Quiz.jsx';
 import Result from './components/Result.jsx';
 import StartPage from './components/StartPage.jsx';
+import { API_BASE } from "./config.js";  
 
 function App() {
   const [quizData, setQuizData] = useState([]);
@@ -12,7 +13,7 @@ function App() {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3000/questions')
+    fetch(`${API_BASE}/questions`)
       .then((res) => res.json())
       .then((data) => setQuizData(data));
   }, []);
@@ -34,7 +35,7 @@ function App() {
   };
 
   const submitAnswers = (answers) => {
-    fetch('http://localhost:3000/submit', {
+    fetch(`${API_BASE}/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: userName, answers }),
