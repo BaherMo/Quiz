@@ -45,23 +45,27 @@ app.get('/questions', async (req, res) => {
 // Submit an answer (secure checking on backend)
 app.post('/submit', async (req, res) => {
   try {
-    const { id, answer, name } = req.body;
+    const { name, answers } = req.body;
 
-    const q = await Question.findById(id);
-    if (!q) return res.status(404).json({ correct: false });
+    const questions = await Question.find();
 
-    const isCorrect = q.answer === answer;
+    let score = 0;
 
-    // Save individual result (optional)
-    const resultDoc = new Result({
-      name: name || "Anonymous",
-      score: isCorrect ? 1 : 0,
-      total: 1
+    // Compare answers
+    answers.forEach((answer, index) => {
+      if (questions[index] && questions[index].answer === answer) {
+        score++;
+      }
     });
 
+    const total = questions.length;
+
+    // Optional: Save in DB
+    const resultDoc = new Result({ name, score, total });
     await resultDoc.save();
 
-    res.json({ correct: isCorrect });
+    res.json({ score, total });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
